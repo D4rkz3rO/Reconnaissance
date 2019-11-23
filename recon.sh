@@ -24,7 +24,7 @@ sort -u merge.txt -o all_subdomains.txt
 cat all_subdomains.txt | ~/go/bin/httprobe | tee -a alive.txt
 
 # Starting gowitness
-#~/go/bin/gowitness file --source=urls.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
+~/go/bin/gowitness file --source=urls.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
 
 # Starting aquatone
 cat all_subdomains.txt | ~/tools/aquatone/aquatone -out aquatone
