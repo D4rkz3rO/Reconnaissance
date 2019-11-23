@@ -1,2 +1,2 @@
-# Reconnaissance
-Recon tools and techniques
+# Basic Reconnaissance
+Basic Recon tools and techniques
