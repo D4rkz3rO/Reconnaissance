@@ -4,6 +4,7 @@
 
 # Starting amass with configuration script
 ~/go/bin/amass enum -passive -config ~/config.ini -d $1 -o amass_subdomains.txt
+#amass enum -passive -d $1 -o amass_subdomains.txt
 
 # Starting subfinder
 ~/go/bin/subfinder -d $1 -o subfinder_subdomains.txt
