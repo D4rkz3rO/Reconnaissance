@@ -20,6 +20,9 @@ go get -v -u github.com/tomnomnom/httprobe
 #Installing gowitness
 go get -v -u github.com/sensepost/gowitness
 
+#Installing gobuster
+go get -v -u github.com/OJ/gobuster
+
 #Installing Sublist3r
 git clone https://github.com/aboul3la/Sublist3r.git ~/tools/
 pip install -r ~/tools/Sublist3r/requirements.txt
