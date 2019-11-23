@@ -9,7 +9,7 @@
 ~/go/bin/subfinder -d $1 -o subfinder_subdomains.txt
 
 # Starting assetfinder
-~/go/bin/assetfinder $1 | tee -a assetfinder_subdomains.txt
+~/go/bin/assetfinder --subs-only $1 | tee -a assetfinder_subdomains.txt
 
 # Starting sublist3r
 ~/tools/Sublist3r/sublist3r.py -d $1 -o sublist3r_subdomains.txt
