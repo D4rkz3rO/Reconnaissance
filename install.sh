@@ -3,6 +3,7 @@
 #Author memN0ps
 
 #Installing Amass
+export GO111MODULE=on
 go get -v -u github.com/OWASP/Amass/v3/...
 
 #Installing subfinder
@@ -24,5 +25,5 @@ go get -v -u github.com/sensepost/gowitness
 go get -v -u github.com/OJ/gobuster
 
 #Installing Sublist3r
-git clone https://github.com/aboul3la/Sublist3r.git ~/tools/
+git clone https://github.com/aboul3la/Sublist3r.git ~/tools/Sublist3r/
 pip install -r ~/tools/Sublist3r/requirements.txt
