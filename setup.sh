@@ -48,3 +48,9 @@ echo "Done! sublist3r installed"
 echo "Installing dirsearch"
 git clone https://github.com/maurosoria/dirsearch.git ~/tools/dirsearch/
 echo "Done! dirsearch installed"
+
+#Installing massdns
+echo "Installing massdns"
+git clone https://github.com/blechschmidt/massdns.git ~/tools/massdns/
+make -C ~/tools/massdns
+echo "Done! massdns installed"
