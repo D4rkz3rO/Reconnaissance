@@ -21,6 +21,9 @@ cat amass_subdomains.txt >> merge.txt && cat subfinder_subdomains.txt >> merge.t
 # Removing duplicate entries
 sort -u merge.txt -o all_subdomains.txt
 
+# Starting massdns
+~/tools/massdns/bin/massdns -r ~/tools/massdns/lists/resolvers.txt -t A -o S -w massdns_results.txt all_subdomains.txt
+
 # Starting httpprobe
 cat all_subdomains.txt | ~/go/bin/httprobe | tee -a alive.txt
 
