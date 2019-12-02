@@ -2,6 +2,11 @@
 
 #Author memN0ps
 
+#Installing golang
+echo "Installing golang"
+sudo apt install golang -y
+echo "Done! golang installed"
+
 #Installing amass
 echo "Installing amass"
 export GO111MODULE=on
@@ -54,3 +59,10 @@ echo "Installing massdns"
 git clone https://github.com/blechschmidt/massdns.git ~/tools/massdns/
 make -C ~/tools/massdns
 echo "Done! massdns installed"
+
+#Installing massscan
+echo "Installing massscan"
+sudo apt-get install git gcc make libpcap-dev -y
+git clone https://github.com/robertdavidgraham/masscan ~/tools/masscan/
+make -C ~/tools/masscan
+echo "Done! massscan installed"
