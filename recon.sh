@@ -12,7 +12,7 @@
 cat amass_subdomains.txt subfinder_subdomains.txt >> unsorted_subdomains.txt
 
 #Remove duplicate entries
-sort -u merge.txt -o merged_subdomains.txt
+sort -u unsorted_subdomains.txt -o merged_subdomains.txt
 
 #Run shuffledns to find alive hosts
 ~/go/bin/shuffledns -list merged_subdomains.txt -r ~/tools/SecLists/Miscellaneous/dns-resolvers.txt -silent -o alive_subdomains.txt
