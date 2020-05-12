@@ -71,14 +71,14 @@ read_choice() {
 			# Checks for missing programs and installs them
 			echo "Installing $choice"
 			check_missing_programs ;;
-        1)
-            echo "Installing $choice"
+        	1)
+            		echo "Installing $choice"
 			install_amass ;;
 
-        2)  echo "Installing $choice"
+        	2)  	echo "Installing $choice"
 			install_subfinder ;;
 
-        3)  echo "Installing $choice"
+       		3)  	echo "Installing $choice"
 			install_httprobe ;;
 
 		4)	echo "Installing $choice"
