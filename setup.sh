@@ -96,16 +96,16 @@ read_choice() {
 		8)	echo "Installing $choice"
 			install_aquatone ;;
 
-		9) echo "Installing $choice"
+		9) 	echo "Installing $choice"
 			install_subjack ;;
 
-		10) echo "Installing $choice"
+		10) 	echo "Installing $choice"
 			install_gobuster ;;
 
-		11) echo "Installing $choice"
+		11) 	echo "Installing $choice"
 			install_ffuf ;;
 
-		99) echo "Installing All Tools"
+		99) 	echo "Installing All Tools"
 			install_all ;;
 
 		100) exit 0 ;;
