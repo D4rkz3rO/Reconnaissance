@@ -1,35 +1,28 @@
 #!/bin/bash
 
-#Author memN0ps
+#Author memn0ps
 
-# Starting amass with configuration script
-~/go/bin/amass enum -passive -config ~/config.ini -d $1 -o amass_subdomains.txt
-#amass enum -passive -d $1 -o amass_subdomains.txt
+#Run amass $1 for domains name
+~/go/bin/amass enum -passive -d $1 -o amass_subdomains.txt
 
-# Starting subfinder
+#Run subfinder $1 is domain name
 ~/go/bin/subfinder -d $1 -o subfinder_subdomains.txt
 
-# Starting assetfinder
-~/go/bin/assetfinder --subs-only $1 | tee -a assetfinder_subdomains.txt
+# Merge subdomains
+cat amass_subdomains.txt subfinder_subdomains.txt >> unsorted_subdomains.txt
 
-# Starting sublist3r
-~/tools/Sublist3r/sublist3r.py -d $1 -o sublist3r_subdomains.txt
+#Remove duplicate entries
+sort -u merge.txt -o merged_subdomains.txt
 
-# Merging subdomains
-cat amass_subdomains.txt >> merge.txt && cat subfinder_subdomains.txt >> merge.txt && cat assetfinder_subdomains.txt >> merge.txt && cat sublist3r_subdomains.txt >> merge.txt
+#Run shuffledns to find alive hosts
+~/go/bin/shuffledns -list merged_subdomains.txt -r ~/tools/SecLists/Miscellaneous/dns-resolvers.txt -silent -o alive_subdomains.txt
 
-# Removing duplicate entries
-sort -u merge.txt -o all_subdomains.txt
+#Run httprobe to find URLs
+cat alive_subdomains.txt | ~/go/bin/httprobe -p http:80 -p http:443 http:8080 -p https:8443 | tee -a alive_URLs.txt
 
-# Starting massdns
-~/tools/massdns/bin/massdns -r ~/tools/massdns/lists/resolvers.txt -t A -o S -w massdns_results.txt all_subdomains.txt
+# Run gowitness to screenshot those URLs
+~/go/bin/gowitness file --source=alive_URLs.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
 
-# Starting httpprobe
-cat all_subdomains.txt | ~/go/bin/httprobe | tee -a alive.txt
-
-# Starting gowitness
-mkdir gowitness_screenshots
-~/go/bin/gowitness file --source=alive.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
-
-# Starting aquatone
-cat all_subdomains.txt | ~/tools/aquatone/aquatone -out aquatone
+#gowitness report generate
+#This should result in an report.html file with a screenshot report where screenshots are sorted using perception hashing.
+~/go/bin/gowitness report generate --sort-perception 
