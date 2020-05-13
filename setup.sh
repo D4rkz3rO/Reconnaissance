@@ -1,38 +1,47 @@
 #!/bin/bash
 
-#Author memN0ps
+#Author memN0ps and Phish aka dunderhay
+
 # Tested on Linux using Vim
 
 # Used get_package_manager just incase it is needed for anything
-PACKAGE_MANAGER=""
+package_manager=""
 
 # Change libpcap-dev to libcap if using macosx to make sure naabu gets installed
 # Programs to install
+
 programs=(go git libpcap-dev)
+
+wordlists=("https://github.com/danielmiessler/SecLists" "https://github.com/fuzzdb-project/fuzzdb" "https://github.com/swisskyrepo/PayloadsAllTheThings")
+
+# Change the path to your preference, tools directory will be created if it does not exist
+tools_path="/opt/tools"
+
+# Change the path preference, wordlists directory will be created if does not exist
+wordlists_path="/opt/wordlists"
 
 
 # Usage function
 display_usage() {
-    echo "[-] This script must be run with root privileges."
-    echo -e "[-] Usage: ./install.sh"
+	echo -e "$purple [-] Usage: ./setup.sh $color_off"
 }
 
 load_colors() {
-    RED='\033[0;31m'    
-    GREEN='\033[0;32m'    
-    YELLOW='\033[1;33m'
-    BLUE='\033[0;34m'    
-    PURPLE='\033[0;35m'    
-    CYAN='\033[0;36m'    
-    WHITE='\033[1;37m'
-    COLOR_OFF='\033[0m'
+	red='\033[0;31m'    
+	green='\033[0;32m'    
+	yellow='\033[1;33m'
+	blue='\033[0;34m'    
+	purple='\033[0;35m'    
+	cyan='\033[0;36m'    
+	white='\033[1;37m'
+	color_off='\033[0m'
 }
 
 # Shows the main menu
 show_menu() {
-	clear
-	
-	echo -e "${RED}
+        clear
+
+        echo -e "${red}
 
                               _______                
   _____   ____   _____   ____ \   _  \ ______  ______
@@ -41,91 +50,95 @@ show_menu() {
 |__|_|  /\___  >__|_|  /___|  /\_____  /   __/____  >
       \/     \/      \/     \/       \/|__|       \/ 
 
-	${COLOR_OFF}"
+        ${color_off}"
 
-	echo -e "${GREEN}"
-	echo ""
-	echo "	0. Install dependencies (Go, Git, libpcap-dev)"
-	echo "	1. amass"
-	echo "	2. subfinder"
-	echo "	3. httprobe"
-	echo "	4. shuffledns"
-	echo "	5. dnsprobe"
-	echo "	6. naabu"
-	echo "	7. gowitness"
-	echo "	8. aquatone"
-	echo "	9. subjack"
-	echo "	10. gobuster"
-	echo "	11. ffuf"
-	echo "	99. Install all of the tools above"
-	echo "	100. Exit"
-	echo -e "${COLOR_OFF}"
+        echo -e "${green}"
+        echo ""
+        echo "  0. 	Install dependencies (Go, Git, libpcap-dev)"
+        echo "  1. 	amass"
+        echo "  2. 	subfinder"
+        echo "  3. 	httprobe"
+        echo "  4. 	shuffledns"
+        echo "  5. 	dnsprobe"
+        echo "  6. 	naabu"
+        echo "  7. 	gowitness"
+        echo "  8. 	aquatone"
+        echo "  9. 	subjack"
+        echo "  10. 	gobuster"
+        echo "  11. 	ffuf"
+        echo "  12. 	hakrawler"
+        echo "  99. 	Install all of the tools above"
+        echo "  100. 	Exit"
+        echo -e "${color_off}"
 }
 
 # This functions installs tools selected by the user
 read_choice() {
-    read -p "Enter your choice [0-100]: " choice
+	read -p "Enter your choice [0-100]: " choice
 
-    case $choice in
-		0)
-			# Checks for missing programs and installs them
-			echo "Installing $choice"
-			check_missing_programs ;;
-        	1)
-            		echo "Installing $choice"
-			install_amass ;;
+	case $choice in
+	
+	0)	echo "Installing $choice"
+		check_missing_programs ;;
+		
+	1)	echo "Installing $choice"
+		install_amass ;;
 
-        	2)  	echo "Installing $choice"
-			install_subfinder ;;
+	2)	echo "Installing $choice"
+		install_subfinder ;;
 
-       		3)  	echo "Installing $choice"
-			install_httprobe ;;
+	3)  	echo "Installing $choice"
+		install_httprobe ;;
 
-		4)	echo "Installing $choice"
-			install_shuffledns ;;
+	4)	echo "Installing $choice"
+		install_shuffledns ;;
 
-		5)	echo "Installing $choice"
-			install_dnsprobe ;;
+	5)      echo "Installing $choice"
+		install_dnsprobe ;;
 
-		6)	echo "Installing $choice"
-			install_naabu ;;
+	6)      echo "Installing $choice"
+		install_naabu ;;
 
-		7)	echo "Installing $choice"
-			install_gowitness ;;
+	7)      echo "Installing $choice"
+		install_gowitness ;;
 
-		8)	echo "Installing $choice"
-			install_aquatone ;;
+	8)      echo "Installing $choice"
+		install_aquatone ;;
 
-		9) 	echo "Installing $choice"
-			install_subjack ;;
+	9)	echo "Installing $choice"
+		install_subjack ;;
 
-		10) 	echo "Installing $choice"
-			install_gobuster ;;
+	10)	echo "Installing $choice"
+		install_gobuster ;;
 
-		11) 	echo "Installing $choice"
-			install_ffuf ;;
+	11)	echo "Installing $choice"
+		install_ffuf ;;
 
-		99) 	echo "Installing All Tools"
-			install_all ;;
+	12)	echo "Installing $choice"
+		install_hakrawler ;;
 
-		100) exit 0 ;;
+	99)	echo "Installing All Tools"
+		install_all ;;
 
-        *)  echo "Sorry, invalid input" ;;
-    esac
+	100)	exit 0 ;;
+
+	*) 	echo "Sorry, invalid input" ;;
+	
+	esac
 }
 
 # Checks to see if a program is installed, if not then installs it based on package manager
 check_missing_programs() {
 	for p in "${programs[@]}"
 	do
-		if command -v "$p" &>/dev/null
+		if [ -x "$(command -v $p &>/dev/null)" ]
 		then
-			echo "[+] $p is installed"
-			pause
+		        echo "[+] $p is installed"
+		        pause
 		else
-			echo "[-] $p is not installed"
-			echo "[+] Installing $p"
-			install_missing_programs "$p"
+		        echo "[-] $p is not installed"
+		        echo "[+] Installing $p"
+		        install_missing_programs "$p"
 		fi
 	done
 }
@@ -134,33 +147,33 @@ check_missing_programs() {
 
 # Install missing programs/packages/dependencies based on package manager
 install_missing_programs() {
-	if [[ $PACKAGE_MANAGER == "apt" ]]
+	if [[ $package_manager == "apt" ]]
 	then
-		apt install -y $p
+		sudo apt install -y $p
 		pause
 
 	# Brew
-	elif [[ $PACKAGE_MANAGER == "brew" ]]
+	elif [[ $package_manager == "brew" ]]
 	then
-		brew install $p
+		sudo brew install $p
 		pause
 
 	#DNF
-	elif [[ $PACKAGE_MANAGER == "dnf" ]]
+	elif [[ $package_manager == "dnf" ]]
 	then
-		dnf install -y $p
+		sudo dnf install -y $p
 		pause
 
 	# Yum
-	elif [[ $PACKAGE_MANAGER == "yum" ]]
+	elif [[ $package_manager == "yum" ]]
 	then
-		yum install -y $p
+		sudo yum install -y $p
 		pause
 
 	# PKG
-	elif [[ $PACKAGE_MANAGER == "pkg" ]]
+	elif [[ $package_manager == "pkg" ]]
 	then
-		pkg install -y $p
+		sudo pkg install -y $p
 		pause
 
 	# Error
@@ -177,27 +190,27 @@ get_package_manager() {
 	# Apt
 	if [ -x "$(command -v apt)" ]
 	then
-		PACKAGE_MANAGER="apt"
+		package_manager="apt"
 
 	# Brew
 	elif [ -x "$(command -v brew)" ]
 	then
-		PACKAGE_MANAGER="brew"
+		package_manager="brew"
 
 	#DNF
 	elif [ -x "$(command -v dnf)" ]
 	then
-		PACKAGE_MANAGER="dnf"
+		package_manager="dnf"
 
 	# Yum
 	elif [ -x "$(command -v yum)" ]
 	then
-		PACKAGE_MANAGER="yum"
+		package_manager="yum"
 
 	# PKG
 	elif [ -x "$(command -v pkg)" ]
 	then
-		PACKAGE_MANAGER="pkg"
+		package_manager="pkg"
 
 	# Error
 	else
@@ -263,7 +276,13 @@ install_gobuster() {
 
 # Install ffuf
 install_ffuf() {
-	go get -u -v github.com/ffuf/ffuf
+        go get -u -v github.com/ffuf/ffuf
+        pause
+}
+
+# Install hakrawler
+install_hakrawler() {
+	go get -u -v github.com/hakluke/hakrawler
 	pause
 }
 
@@ -280,24 +299,55 @@ install_all() {
 	install_subjack
 	install_gobuster
 	install_ffuf
+	install_hakrawler
+	create_tools_dir
+	create_wordlists_dir 
+}
+
+# This functions creates a tools directory if it does not exist
+create_tools_dir() {
+	if [ -d "$tools_path" ]
+	then
+		echo -e "[*] $tools_path directory found $no_color"
+	else
+		echo -e "$blue [-] $tools_path does not exist, creating $tools_path $no_color"
+		sudo mkdir -p "$tools_path"
+	fi
+}
+
+
+# This function creates a wordlist directory if it does not exist
+create_wordlists_dir() {
+	if [ -d "$wordlists_path" ]
+	then
+		echo -e "$blue [*] $wordlists_path directory found $no_color"
+	else
+		echo -e "$blue [-] $wordlists_path does not exist, creating $wordlists_path $no_color"
+		sudo mkdir -p "$wordlists_path"
+	fi
 }
 
 pause() {
 	read -p "Press [Enter] key to continue..." ENTERKEY
 }
 
-
 # Main function
 main() {
-	# Gets the package manager and sets the global variable PACKAGE_MANAGER
-	get_package_manager
+        # Gets the package manager and sets the global variable package_manager
+        get_package_manager
+        
+        create_tools_dir
+        pause
+        
+        create_wordlists_dir
+        pause
 
-	# Keeps looping through the program
-	while true
+        # Keeps looping through the program
+        while true
 	do
 		# load_colors
 		load_colors
-		
+
 		# Display the main menu
 		show_menu
 
@@ -314,16 +364,4 @@ then
 	exit 0
 fi 
  
-# Display usage if the script is not run as root user 
-if [[ $USER != "root" ]]; then 
-	echo "This script must be run as root!" 
-	exit 1
-fi 
-
 main
-
-# References
-##  https://www.shellhacks.com/bash-colors/
-##  https://misc.flogisoft.com/bash/tip_colors_and_formatting
-##  https://vim.fandom.com/wiki/Vim_Tips_Wiki 
-##  https://github.com/vitalysim/totalrecon/blob/master/total_recon.sh
