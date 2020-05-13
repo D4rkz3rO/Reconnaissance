@@ -1,7 +1,7 @@
 # Basic Reconnaissance
 Basic recon tools and techniques. 
 
-This is just a very basic script which makes it easier for to install tools if I change box/server or in case I want to install all the tools on another computer.
+This is just a very basic script which makes it easier for me to install tools if I change box/server or in case I want to install all the tools on another computer.
 
 Please note this not 100% complete and still needs to be worked on. There is always room for improvements.
 
