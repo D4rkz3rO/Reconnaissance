@@ -7,7 +7,7 @@ Please note this not 100% complete and still needs to be worked on. There is alw
 
 ## Description
 
-setup.sh installs a bunch of tools you select from (from 0-99). I've only added a few tools to install as an example, feel free to make more functions that installs more tools and add it to the switch statement and the menu function.
+setup.sh installs a bunch of tools you select (from 0-99). I've only added a few tools to install as an example, feel free to make more functions that installs more tools and add it to the switch statement and the menu function.
 
 Recon.sh takes a domain as a parameter which performs subdomain enumeration and puts the output in a text file. This recon step is just a personal preference, change it to whatever you want.
 
