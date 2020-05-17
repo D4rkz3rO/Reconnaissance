@@ -2,7 +2,10 @@
 
 #Author memN0ps and Phish aka dunderhay
 
-# Tested on Linux using Vim
+# Tested on Linux/Mac OSX using Vim and Visual Code
+
+#Export the GOPATH in case it has not been done
+export GOPATH=$HOME/go
 
 # Used get_package_manager just incase it is needed for anything
 package_manager=""
@@ -10,20 +13,22 @@ package_manager=""
 # Change libpcap-dev to libcap if using macosx to make sure naabu gets installed
 # Programs to install
 
-programs=(go git libpcap-dev)
+programs=(go git libpcap-dev libcap)
 
-wordlists=("https://github.com/danielmiessler/SecLists" "https://github.com/fuzzdb-project/fuzzdb" "https://github.com/swisskyrepo/PayloadsAllTheThings")
+wordlists=("https://github.com/danielmiessler/SecLists" "https://github.com/fuzzdb-project/fuzzdb" "https://github.com/swisskyrepo/PayloadsAllTheThings" "https://github.com/projectdiscovery/nuclei-templates.git")
 
 # Change the path to your preference, tools directory will be created if it does not exist
-tools_path="/opt/tools"
+tools_path="$HOME/tools"
 
 # Change the path preference, wordlists directory will be created if does not exist
-wordlists_path="/opt/wordlists"
+wordlists_path="$HOME/tools/wordlists"
 
 
 # Usage function
 display_usage() {
-	echo -e "$purple [-] Usage: ./setup.sh $color_off"
+	echo -e "$purple [-] Usage: <function_name> <domain_name> $color_off"
+    echo -e "$purple [*] Example: install_all $color_off"
+    echo -e "$purple [*] Example: Recon_all <domain> $color_off"
 }
 
 load_colors() {
@@ -54,19 +59,20 @@ show_menu() {
 
         echo -e "${green}"
         echo ""
-        echo "  0. 	Install dependencies (Go, Git, libpcap-dev)"
-        echo "  1. 	amass"
-        echo "  2. 	subfinder"
-        echo "  3. 	httprobe"
-        echo "  4. 	shuffledns"
-        echo "  5. 	dnsprobe"
-        echo "  6. 	naabu"
-        echo "  7. 	gowitness"
-        echo "  8. 	aquatone"
-        echo "  9. 	subjack"
+        echo "  0. 	    Install dependencies (Go, Git, libpcap-dev, install wordlists, create tools dir) *Recommended*"
+        echo "  1. 	    amass"
+        echo "  2. 	    subfinder"
+        echo "  3. 	    httprobe"
+        echo "  4. 	    shuffledns"
+        echo "  5. 	    dnsprobe"
+        echo "  6. 	    naabu"
+        echo "  7. 	    gowitness"
+        echo "  8. 	    aquatone"
+        echo "  9. 	    subjack"
         echo "  10. 	gobuster"
         echo "  11. 	ffuf"
         echo "  12. 	hakrawler"
+        echo "  13.     nuclei"
         echo "  99. 	Install all of the tools above"
         echo "  100. 	Exit"
         echo -e "${color_off}"
@@ -79,7 +85,9 @@ read_choice() {
 	case $choice in
 	
 	0)	echo "Installing $choice"
-		check_missing_programs ;;
+		check_missing_programs
+        install_wordlists
+        create_tools_dir ;;
 		
 	1)	echo "Installing $choice"
 		install_amass ;;
@@ -87,26 +95,26 @@ read_choice() {
 	2)	echo "Installing $choice"
 		install_subfinder ;;
 
-	3)  	echo "Installing $choice"
+	3)  echo "Installing $choice"
 		install_httprobe ;;
 
 	4)	echo "Installing $choice"
 		install_shuffledns ;;
 
-	5)      echo "Installing $choice"
+	5)  echo "Installing $choice"
 		install_dnsprobe ;;
 
-	6)      echo "Installing $choice"
+	6)  echo "Installing $choice"
 		install_naabu ;;
 
-	7)      echo "Installing $choice"
-		install_gowitness ;;
+	7)  echo "Installing $choice"
+        install_gowitness ;;
 
-	8)      echo "Installing $choice"
+	8)  echo "Installing $choice"
 		install_aquatone ;;
 
-	9)	echo "Installing $choice"
-		install_subjack ;;
+	9)  echo "Installing $choice"
+	    install_subjack ;;
 
 	10)	echo "Installing $choice"
 		install_gobuster ;;
@@ -114,13 +122,16 @@ read_choice() {
 	11)	echo "Installing $choice"
 		install_ffuf ;;
 
-	12)	echo "Installing $choice"
+	12) echo "Installing $choice"
 		install_hakrawler ;;
+
+    13) echo "Installing $choice"
+        install_nuclei ;;
 
 	99)	echo "Installing All Tools"
 		install_all ;;
 
-	100)	exit 0 ;;
+	100) exit 0 ;;
 
 	*) 	echo "Sorry, invalid input" ;;
 	
@@ -286,6 +297,11 @@ install_hakrawler() {
 	pause
 }
 
+# Install nuclei
+install_nuclei() {
+    GO111MODULE=on go get -u -v github.com/projectdiscovery/nuclei/cmd/nuclei
+}
+
 # Installs all tools
 install_all() {
 	install_amass
@@ -300,18 +316,32 @@ install_all() {
 	install_gobuster
 	install_ffuf
 	install_hakrawler
-	create_tools_dir
-	create_wordlists_dir 
+    install_nuclei
+	install_wordlists
+    create_tools_dir
+	 
+}
+
+# This function creates a wordlist inside the wordlists directory
+install_wordlists() {                
+        create_wordlists_dir
+        pause
+
+        for p in "${wordlists[@]}"
+        do
+            git clone $p
+            pause
+        done
 }
 
 # This functions creates a tools directory if it does not exist
 create_tools_dir() {
 	if [ -d "$tools_path" ]
 	then
-		echo -e "[*] $tools_path directory found $no_color"
+		echo -e "$blue [*] $tools_path directory found $color_off"
 	else
-		echo -e "$blue [-] $tools_path does not exist, creating $tools_path $no_color"
-		sudo mkdir -p "$tools_path"
+		echo -e "$blue [-] $tools_path does not exist, creating $tools_path $color_off"
+		mkdir -p "$tools_path"
 	fi
 }
 
@@ -320,10 +350,10 @@ create_tools_dir() {
 create_wordlists_dir() {
 	if [ -d "$wordlists_path" ]
 	then
-		echo -e "$blue [*] $wordlists_path directory found $no_color"
+		echo -e "$blue [*] $wordlists_path directory found $color_off"
 	else
-		echo -e "$blue [-] $wordlists_path does not exist, creating $wordlists_path $no_color"
-		sudo mkdir -p "$wordlists_path"
+		echo -e "$blue [-] $wordlists_path does not exist, creating $wordlists_path $color_off"
+		mkdir -p "$wordlists_path"
 	fi
 }
 
@@ -332,21 +362,17 @@ pause() {
 }
 
 # Main function
-main() {
-        # Gets the package manager and sets the global variable package_manager
-        get_package_manager
-        
-        create_tools_dir
-        pause
-        
-        create_wordlists_dir
-        pause
+install_tools() {
+    # Gets the package manager and sets the global variable package_manager
+    get_package_manager
+    pause
 
-        # Keeps looping through the program
-        while true
+    # Keeps looping through the program
+    while true
 	do
 		# load_colors
 		load_colors
+        pause
 
 		# Display the main menu
 		show_menu
@@ -357,11 +383,85 @@ main() {
 
 }
 
-# Check whether user had supplied -h or --help . If yes display usage 
-if [[ ( $1 == "--help") ||  $1 == "-h" ]] 
-then 
-	display_usage
-	exit 0
-fi 
- 
-main
+# This function will recon a subdomain provided and output everything inside a text files
+Recon_all() {
+
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        display_usage
+    else
+        #Run amass $1 for domains name
+        ~/go/bin/amass enum -passive -d $1 -o amass_subdomains.txt
+
+        #Run subfinder $1 is domain name
+        ~/go/bin/subfinder -d $1 -o subfinder_subdomains.txt
+
+        # Merge subdomains
+        cat amass_subdomains.txt subfinder_subdomains.txt >> unsorted_subdomains.txt
+
+        #Remove duplicate entries
+        sort -u unsorted_subdomains.txt -o subdomains.txt
+
+        # Find A records (IPv4 addresses)
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r A -o A.txt
+
+        # Find NS records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r NS -o NS.txt
+
+        # Find CNAME records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r CNAME -o CNAME.txt
+
+        # Find SOA records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r SOA -o SOA.txt
+
+        # Find PTR records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r PTR -o PTR.txt
+
+        # Find MX records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r MX -o MX.txt
+
+        # Find TXT records
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r TXT -o TXT.txt
+
+        # Find AAAA records (ipv6 addresses)
+        ~/go/bin/dnsprobe -l subdomains.txt -silent -r AAAA -o AAAA.txt
+
+        # DO TO 
+        # run naabu
+        # run shuffledns  
+
+        #Run httprobe to find URLs
+        cat A.txt | ~/go/bin/httprobe -p http:80 -p http:443 http:8080 -p https:8443 | tee -a alive_URLs.txt
+
+        # Search for subdomain take overs
+        ~/go/bin/nuclei -l alive_URLs.txt -t ~/tools/nuclei-templates/subdomain-takeover/detect-all-takeovers.yaml -o subdomain_takeover.txt
+
+        # Run gowitness to screenshot those URLs
+        ~/go/bin/gowitness file --source=alive_URLs.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
+
+        #gowitness report generate
+        #This should result in an report.html file with a screenshot report where screenshots are sorted using perception hashing.
+        /go/bin/gowitness report generate --sort-perception
+
+    fi
+}
+
+# Recon for quick subdomain takeover
+Recon_subdomain_takeover() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        display_usage
+    else
+        ~/go/bin/subfinder -d $1 | ~/go/bin/dnsprobe -silent -f domain | ~/go/bin/httprobe | ~/go/bin/nuclei -t ~/tools/nuclei-templates/subdomain-takeover/detect-all-takeovers.yaml
+    fi
+}
+
+# DO TO 
+# run naabu
+# run shuffledns  
+# create more functions to recon
+# nmap scans etc..
+# curl requests
+# cronjobs
+# backups
+# date/time and diff
