@@ -10,10 +10,10 @@ export GOPATH=$HOME/go
 # Used get_package_manager just incase it is needed for anything
 package_manager=""
 
-# Change libpcap-dev to libcap if using macosx to make sure naabu gets installed
+# Change libpcap-dev to libpcap if using macosx to make sure naabu gets installed
 # Programs to install
 
-programs=(go git libpcap-dev libcap)
+programs=(go git libpcap-dev libpcap)
 
 wordlists=("https://github.com/danielmiessler/SecLists" "https://github.com/fuzzdb-project/fuzzdb" "https://github.com/swisskyrepo/PayloadsAllTheThings" "https://github.com/projectdiscovery/nuclei-templates.git")
 
@@ -23,12 +23,13 @@ tools_path="$HOME/tools"
 # Change the path preference, wordlists directory will be created if does not exist
 wordlists_path="$HOME/tools/wordlists"
 
-
 # Usage function
 display_usage() {
-	echo -e "$purple [-] Usage: <function_name> <domain_name> ${color_off}"
-    echo -e "$purple [*] Example: install_all ${color_off}"
-    echo -e "$purple [*] Example: Recon_all <domain> ${color_off}"
+	echo -e "$purple[*] Usage: <function_name> <domain name>"
+    echo -e "$purple[*] Example: Recon_all <domain name> ${color_off}"
+
+    echo "${yellow}or to go to the install tools menu ${color_off}"
+    echo -e "${cyan}[*] Example: install_tools ${color_off}"
 }
 
 load_colors() {
@@ -78,64 +79,68 @@ show_menu() {
         echo -e "${color_off}"
 }
 
+print_installing_choice() {
+    echo -e "${red}Installing $choice ${color_off}"
+}
+
 # This functions installs tools selected by the user
 read_choice() {
     # ZSH/OSX does not take 'read "<enter string here>" var' on same line
-	echo "Enter your choice [0-100]: " 
+	echo -e "${yellow}Enter your choice [0-100]: ${color_off}" 
     read choice
 
 	case $choice in
 	
-        0)	echo "Installing $choice"
+        0)	print_installing_choice $choice
             check_missing_programs
             create_tools_dir
             install_wordlists ;;
             
-        1)	echo "Installing $choice"
+        1)	print_installing_choice $choice
             install_amass ;;
 
-        2)	echo "Installing $choice"
+        2)	print_installing_choice $choice
             install_subfinder ;;
 
-        3)  echo "Installing $choice"
+        3)  print_installing_choice $choice
             install_httprobe ;;
 
-        4)	echo "Installing $choice"
+        4)	print_installing_choice $choice
             install_shuffledns ;;
 
-        5)  echo "Installing $choice"
+        5)  print_installing_choice $choice
             install_dnsprobe ;;
 
-        6)  echo "Installing $choice"
+        6)  print_installing_choice $choice
             install_naabu ;;
 
-        7)  echo "Installing $choice"
+        7)  print_installing_choice $choice
             install_gowitness ;;
 
-        8)  echo "Installing $choice"
+        8)  print_installing_choice $choice
             install_aquatone ;;
 
-        9)  echo "Installing $choice"
+        9)  print_installing_choice $choice
             install_subjack ;;
 
-        10)	echo "Installing $choice"
+        10)	print_installing_choice $choice
             install_gobuster ;;
 
-        11)	echo "Installing $choice"
+        11)	print_installing_choice $choice
             install_ffuf ;;
 
-        12) echo "Installing $choice"
+        12) print_installing_choice $choice
             install_hakrawler ;;
 
-        13) echo "Installing $choice"
+        13) print_installing_choice $choice
             install_nuclei ;;
 
-        99)	echo "Installing All Tools"
+        99)	print_installing_choice $choice
             install_all ;;
 
         100) exit 0 ;;
 
-        *) 	echo "Sorry, invalid input" ;;
+        *) 	echo -e "${red} Sorry, invalid input ${color_off}" ;;
 	
 	esac
 }
@@ -146,11 +151,11 @@ check_missing_programs() {
 	do
 		if [[ -n "$(command -v $p)" ]]
 		then
-		        echo "${yellow}[+] $p is installed ${color_off}"
+		        echo -e "${yellow}[+] $p is installed ${color_off}"
 		        pause
 		else
-		        echo "${yellow}[-] $p is not installed ${color_off}"
-		        echo "${yellow}[+] Installing $p ${color_off}"
+		        echo -e "${yellow}[-] $p is not installed ${color_off}"
+		        echo -e "${yellow}[+] Installing $p ${color_off}"
 		        install_missing_programs "$p"
 		fi
 	done
@@ -191,7 +196,7 @@ install_missing_programs() {
 
 	# Error
 	else
-		echo "[-] Error unable to find package manager"
+		echo -e "${red}[-] Error unable to find package manager ${color_off}"
 		pause
 	fi
 
@@ -227,7 +232,7 @@ get_package_manager() {
 
 	# Error
 	else
-		echo "[-] Error unable to find package manager"
+		echo -e "${red}[-] Error unable to find package manager${color_off}"
 	fi
 }
 
@@ -361,7 +366,7 @@ create_wordlists_dir() {
 
 pause() {
     # ZSH/OSX does not take 'read "<enter string here>" var' on same line
-    echo "Press [Enter] key to continue..."
+    echo "${cyan}Press [Enter] key to continue...${color_off}"
 	read  ENTERKEY
 }
 
