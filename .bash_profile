@@ -26,9 +26,9 @@ wordlists_path="$HOME/tools/wordlists"
 
 # Usage function
 display_usage() {
-	echo -e "$purple [-] Usage: <function_name> <domain_name> $color_off"
-    echo -e "$purple [*] Example: install_all $color_off"
-    echo -e "$purple [*] Example: Recon_all <domain> $color_off"
+	echo -e "$purple [-] Usage: <function_name> <domain_name> ${color_off}"
+    echo -e "$purple [*] Example: install_all ${color_off}"
+    echo -e "$purple [*] Example: Recon_all <domain> ${color_off}"
 }
 
 load_colors() {
@@ -59,81 +59,83 @@ show_menu() {
 
         echo -e "${green}"
         echo ""
-        echo "  0. 	    Install dependencies (Go, Git, libpcap-dev, install wordlists, create tools dir) *Recommended*"
-        echo "  1. 	    amass"
-        echo "  2. 	    subfinder"
-        echo "  3. 	    httprobe"
-        echo "  4. 	    shuffledns"
-        echo "  5. 	    dnsprobe"
-        echo "  6. 	    naabu"
-        echo "  7. 	    gowitness"
-        echo "  8. 	    aquatone"
-        echo "  9. 	    subjack"
-        echo "  10. 	gobuster"
-        echo "  11. 	ffuf"
-        echo "  12. 	hakrawler"
-        echo "  13.     nuclei"
-        echo "  99. 	Install all of the tools above"
-        echo "  100. 	Exit"
+        echo "  0. Install dependencies (Go, Git, libpcap-dev, install wordlists, create tools dir) *Recommended*"
+        echo "  1. amass"
+        echo "  2. subfinder"
+        echo "  3. httprobe"
+        echo "  4. shuffledns"
+        echo "  5. dnsprobe"
+        echo "  6. naabu"
+        echo "  7. gowitness"
+        echo "  8. aquatone"
+        echo "  9. subjack"
+        echo "  10. gobuster"
+        echo "  11. fuf"
+        echo "  12. hakrawler"
+        echo "  13. nuclei"
+        echo "  99. Install all of the tools above"
+        echo "  100. Exit"
         echo -e "${color_off}"
 }
 
 # This functions installs tools selected by the user
 read_choice() {
-	read -p "Enter your choice [0-100]: " choice
+    # ZSH/OSX does not take 'read "<enter string here>" var' on same line
+	echo "Enter your choice [0-100]: " 
+    read choice
 
 	case $choice in
 	
-	0)	echo "Installing $choice"
-		check_missing_programs
-        install_wordlists
-        create_tools_dir ;;
-		
-	1)	echo "Installing $choice"
-		install_amass ;;
+        0)	echo "Installing $choice"
+            check_missing_programs
+            create_tools_dir
+            install_wordlists ;;
+            
+        1)	echo "Installing $choice"
+            install_amass ;;
 
-	2)	echo "Installing $choice"
-		install_subfinder ;;
+        2)	echo "Installing $choice"
+            install_subfinder ;;
 
-	3)  echo "Installing $choice"
-		install_httprobe ;;
+        3)  echo "Installing $choice"
+            install_httprobe ;;
 
-	4)	echo "Installing $choice"
-		install_shuffledns ;;
+        4)	echo "Installing $choice"
+            install_shuffledns ;;
 
-	5)  echo "Installing $choice"
-		install_dnsprobe ;;
+        5)  echo "Installing $choice"
+            install_dnsprobe ;;
 
-	6)  echo "Installing $choice"
-		install_naabu ;;
+        6)  echo "Installing $choice"
+            install_naabu ;;
 
-	7)  echo "Installing $choice"
-        install_gowitness ;;
+        7)  echo "Installing $choice"
+            install_gowitness ;;
 
-	8)  echo "Installing $choice"
-		install_aquatone ;;
+        8)  echo "Installing $choice"
+            install_aquatone ;;
 
-	9)  echo "Installing $choice"
-	    install_subjack ;;
+        9)  echo "Installing $choice"
+            install_subjack ;;
 
-	10)	echo "Installing $choice"
-		install_gobuster ;;
+        10)	echo "Installing $choice"
+            install_gobuster ;;
 
-	11)	echo "Installing $choice"
-		install_ffuf ;;
+        11)	echo "Installing $choice"
+            install_ffuf ;;
 
-	12) echo "Installing $choice"
-		install_hakrawler ;;
+        12) echo "Installing $choice"
+            install_hakrawler ;;
 
-    13) echo "Installing $choice"
-        install_nuclei ;;
+        13) echo "Installing $choice"
+            install_nuclei ;;
 
-	99)	echo "Installing All Tools"
-		install_all ;;
+        99)	echo "Installing All Tools"
+            install_all ;;
 
-	100) exit 0 ;;
+        100) exit 0 ;;
 
-	*) 	echo "Sorry, invalid input" ;;
+        *) 	echo "Sorry, invalid input" ;;
 	
 	esac
 }
@@ -142,13 +144,13 @@ read_choice() {
 check_missing_programs() {
 	for p in "${programs[@]}"
 	do
-		if [ -x "$(command -v $p &>/dev/null)" ]
+		if [[ -n "$(command -v $p)" ]]
 		then
-		        echo "[+] $p is installed"
+		        echo "${yellow}[+] $p is installed ${color_off}"
 		        pause
 		else
-		        echo "[-] $p is not installed"
-		        echo "[+] Installing $p"
+		        echo "${yellow}[-] $p is not installed ${color_off}"
+		        echo "${yellow}[+] Installing $p ${color_off}"
 		        install_missing_programs "$p"
 		fi
 	done
@@ -166,7 +168,7 @@ install_missing_programs() {
 	# Brew
 	elif [[ $package_manager == "brew" ]]
 	then
-		sudo brew install $p
+		brew install $p
 		pause
 
 	#DNF
@@ -199,27 +201,27 @@ install_missing_programs() {
 # Gets the package manager
 get_package_manager() {
 	# Apt
-	if [ -x "$(command -v apt)" ]
+	if [[ -n "$(command -v apt-get)" ]]
 	then
 		package_manager="apt"
 
 	# Brew
-	elif [ -x "$(command -v brew)" ]
+	elif [[ -n "$(command -v brew)" ]]
 	then
 		package_manager="brew"
 
 	#DNF
-	elif [ -x "$(command -v dnf)" ]
+	elif [[ -n "$(command -v dnf)" ]]
 	then
 		package_manager="dnf"
 
 	# Yum
-	elif [ -x "$(command -v yum)" ]
+	elif [[ -n "$(command -v yum)" ]]
 	then
 		package_manager="yum"
 
 	# PKG
-	elif [ -x "$(command -v pkg)" ]
+	elif [[ -n "$(command -v pkg)" ]]
 	then
 		package_manager="pkg"
 
@@ -302,8 +304,11 @@ install_nuclei() {
     GO111MODULE=on go get -u -v github.com/projectdiscovery/nuclei/cmd/nuclei
 }
 
-# Installs all tools
+# Installs all tools and dependencies
 install_all() {
+    check_missing_programs
+    create_tools_dir
+    install_wordlists
 	install_amass
 	install_subfinder
 	install_httprobe
@@ -317,9 +322,6 @@ install_all() {
 	install_ffuf
 	install_hakrawler
     install_nuclei
-	install_wordlists
-    create_tools_dir
-	 
 }
 
 # This function creates a wordlist inside the wordlists directory
@@ -329,7 +331,7 @@ install_wordlists() {
 
         for p in "${wordlists[@]}"
         do
-            git clone $p
+            git -C $wordlists_path clone $p
             pause
         done
 }
@@ -338,9 +340,9 @@ install_wordlists() {
 create_tools_dir() {
 	if [ -d "$tools_path" ]
 	then
-		echo -e "$blue [*] $tools_path directory found $color_off"
+		echo -e "${blue}[*] $tools_path directory found ${color_off}"
 	else
-		echo -e "$blue [-] $tools_path does not exist, creating $tools_path $color_off"
+		echo -e "${blue}[-] $tools_path does not exist, creating $tools_path ${color_off}"
 		mkdir -p "$tools_path"
 	fi
 }
@@ -350,29 +352,29 @@ create_tools_dir() {
 create_wordlists_dir() {
 	if [ -d "$wordlists_path" ]
 	then
-		echo -e "$blue [*] $wordlists_path directory found $color_off"
+		echo -e "${blue}[*] $wordlists_path directory found ${color_off}"
 	else
-		echo -e "$blue [-] $wordlists_path does not exist, creating $wordlists_path $color_off"
+		echo -e "${blue}[-] $wordlists_path does not exist, creating $wordlists_path ${color_off}"
 		mkdir -p "$wordlists_path"
 	fi
 }
 
 pause() {
-	read -p "Press [Enter] key to continue..." ENTERKEY
+    # ZSH/OSX does not take 'read "<enter string here>" var' on same line
+    echo "Press [Enter] key to continue..."
+	read  ENTERKEY
 }
 
 # Main function
 install_tools() {
     # Gets the package manager and sets the global variable package_manager
     get_package_manager
-    pause
-
+    
     # Keeps looping through the program
     while true
 	do
 		# load_colors
 		load_colors
-        pause
 
 		# Display the main menu
 		show_menu

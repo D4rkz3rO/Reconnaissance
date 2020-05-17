@@ -10,13 +10,15 @@ You can also add more functions with onliner commands of your choice, which will
 
 For example, dirsearch, ffuff, gobuster, nmap, subdomain takeover, curl requests, screenshots, locate JavaScript files, cronjobs, backups, diff etc...
 
+**Note: I'm still working on this from time to time, so some of the functionality may not work.**
+
 ## Usage
 
 Download the repository 
 
-`git clone https://github.com/memn0ps/Reconnaissance`
+`git clone https://github.com/memN0ps/Reconnaissance`
 
-Copy the .bash_profile in your home directory (make sure you don't overwrite your existing one, so please create a backup copy)
+Copy the `.bash_profile` in your home directory (make sure you don't overwrite your existing one, so please create a backup copy)
 
 `cp Reconnaissance/.bash_profile ~/.bash_profile`
 
@@ -24,9 +26,9 @@ Activate the bash profile
 
 `source ~/.bash_profile`
 
-Install the tools required
+Install all the tools required
 
-`install_all`
+`install_tools` (Recommended) or `install_all` (Blindly install all the tools)
 
 Start your recon
 
