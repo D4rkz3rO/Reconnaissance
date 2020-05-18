@@ -91,21 +91,21 @@ read_choice() {
 
 	case $choice in
 	
-        0)	print_installing_choice $choice
+        0)  print_installing_choice $choice
             check_missing_programs
             create_tools_dir
             install_wordlists ;;
             
-        1)	print_installing_choice $choice
+        1)  print_installing_choice $choice
             install_amass ;;
 
-        2)	print_installing_choice $choice
+        2)  print_installing_choice $choice
             install_subfinder ;;
 
         3)  print_installing_choice $choice
             install_httprobe ;;
 
-        4)	print_installing_choice $choice
+        4)  print_installing_choice $choice
             install_shuffledns ;;
 
         5)  print_installing_choice $choice
@@ -123,19 +123,19 @@ read_choice() {
         9)  print_installing_choice $choice
             install_subjack ;;
 
-        10)	print_installing_choice $choice
+        10)  print_installing_choice $choice
             install_gobuster ;;
 
-        11)	print_installing_choice $choice
+        11)  print_installing_choice $choice
             install_ffuf ;;
 
-        12) print_installing_choice $choice
+        12)  print_installing_choice $choice
             install_hakrawler ;;
 
-        13) print_installing_choice $choice
+        13)  print_installing_choice $choice
             install_nuclei ;;
 
-        99)	print_installing_choice $choice
+        99)  print_installing_choice $choice
             install_all ;;
 
         100) exit 0 ;;
@@ -460,6 +460,44 @@ Recon_subdomain_takeover() {
         display_usage
     else
         ~/go/bin/subfinder -d $1 | ~/go/bin/dnsprobe -silent -f domain | ~/go/bin/httprobe | ~/go/bin/nuclei -t ~/tools/nuclei-templates/subdomain-takeover/detect-all-takeovers.yaml
+    fi
+}
+
+Recon_nmap_full_tcp() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_nmap_full_tcp <subdomains.txt> <output file> ${color_off}"
+    else
+        nmap -sC -sV -p- -iL $1 -oA $2
+    fi
+}
+
+Recon_gowitness() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_gowitness <subdomains.txt> <output directory> ${color_off}"
+    else
+        # Run gowitness to screenshot those URLs
+        mkdir -p $2
+        ~/go/bin/gowitness file --source=$1 --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="$2"
+    fi
+}
+
+Recon_hakrawler() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_hakrawler <subdomains.txt> <output file> ${color_off}"
+    else
+        cat $1 | ~/go/bin/hakrawler $2 -scope=subs | tee $2
+    fi
+}
+
+Recon_ffuf() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_ffuf <path to wordlist> <URL> <output file> ${color_off}"
+    else
+        ~/go/bin/ffuf -c -w $1 -u $2 -of $3
     fi
 }
 
