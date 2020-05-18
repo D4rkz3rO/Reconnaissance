@@ -23,14 +23,6 @@ tools_path="$HOME/tools"
 # Change the path preference, wordlists directory will be created if does not exist
 wordlists_path="$HOME/tools/wordlists"
 
-# Usage function
-display_usage() {
-    echo -e "$purple[*] Usage: <function_name> <domain name>"
-    echo -e "$purple[*] Example: Recon_all <domain name> ${color_off}"
-
-    echo "${yellow}or to go to the install tools menu ${color_off}"
-    echo -e "${cyan}[*] Example: install_tools ${color_off}"
-}
 
 load_colors() {
     red='\033[0;31m'    
@@ -242,79 +234,85 @@ get_package_manager() {
 # Installs amass
 install_amass() {
 	GO111MODULE=on go get -u -v github.com/OWASP/Amass/v3/...
+    pause
 }
 
 # Installs subfinder
 install_subfinder() {
 	go get -u -v github.com/projectdiscovery/subfinder/cmd/subfinder
+    pause
 }
 
 # Installs httprobe
 install_httprobe() {
-	go get -u -v github.com/tomnomnom/httprobe
+    go get -u -v github.com/tomnomnom/httprobe
+    pause
 }
 
 # Installs shuffledns
 install_shuffledns() {
-	GO111MODULE=on go get -u -v github.com/projectdiscovery/shuffledns/cmd/shuffledns
+    GO111MODULE=on go get -u -v github.com/projectdiscovery/shuffledns/cmd/shuffledns
+    pause
 }
 
 # Installs dnsprobe
 install_dnsprobe() {
-	GO111MODULE=on go get -u -v github.com/projectdiscovery/dnsprobe
-	pause
+    GO111MODULE=on go get -u -v github.com/projectdiscovery/dnsprobe
+    pause
 }
 
 # Installs naabu
 install_naabu() {
-	go get -u -v github.com/projectdiscovery/naabu/cmd/naabu
-	pause
+    go get -u -v github.com/projectdiscovery/naabu/cmd/naabu
+    pause
 }
 
 # Installs gowitness
 install_gowitness() {
-	go get -u -v github.com/sensepost/gowitness
-	pause
+    go get -u -v github.com/sensepost/gowitness
+    pause
 }
 
 # Installs aquatone
 install_aquatone() {
-	go get -u -v github.com/michenriksen/aquatone
-	pause
+    go get -u -v github.com/michenriksen/aquatone
+    pause
 }
 
 #Installs subjack
 install_subjack() {
-	go get -u -v github.com/haccer/subjack
-	pause
+    go get -u -v github.com/haccer/subjack
+    pause
 }
 
 # Installs gobuster
 install_gobuster() {
-	go get -u -v github.com/OJ/gobuster
-	pause
+    go get -u -v github.com/OJ/gobuster
+    pause
 }
 
 # Install ffuf
 install_ffuf() {
-        go get -u -v github.com/ffuf/ffuf
-        pause
+    go get -u -v github.com/ffuf/ffuf
+    pause
 }
 
 # Install hakrawler
 install_hakrawler() {
-	go get -u -v github.com/hakluke/hakrawler
-	pause
+    go get -u -v github.com/hakluke/hakrawler
+    pause
 }
 
 # Install nuclei
 install_nuclei() {
     GO111MODULE=on go get -u -v github.com/projectdiscovery/nuclei/cmd/nuclei
+    pause
 }
 
 # Install dirsearch
 install_dirsearch() {
     git -C $tools_path clone https://github.com/maurosoria/dirsearch
+    pause
 }
 
 # Installs all tools and dependencies
@@ -340,14 +338,14 @@ install_all() {
 
 # This function creates a wordlist inside the wordlists directory
 install_wordlists() {                
-        create_wordlists_dir
-        pause
+    create_wordlists_dir
+    pause
 
-        for p in "${wordlists[@]}"
-        do
-            git -C $wordlists_path clone $p
-            pause
-        done
+    for p in "${wordlists[@]}"
+    do
+        git -C $wordlists_path clone $p
+        pause
+    done
 }
 
 # This functions creates a tools directory if it does not exist
@@ -403,7 +401,7 @@ Recon_all() {
 
     if [[ $1 == "--help" || $1 == "-h" ]]
     then
-        display_usage
+        echo -e "$purple[*] Example: Recon_all <domain name> <gowitness screenshot directory> ${color_off}"
     else
         #Run amass $1 for domains name
         ~/go/bin/amass enum -passive -d $1 -o amass_subdomains.txt
@@ -451,8 +449,14 @@ Recon_all() {
         # Search for subdomain take overs
         ~/go/bin/nuclei -l alive_URLs.txt -t ~/tools/nuclei-templates/subdomain-takeover/detect-all-takeovers.yaml -o subdomain_takeover.txt
 
-        # Run gowitness to screenshot those URLs
-        ~/go/bin/gowitness file --source=alive_URLs.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="gowitness_screenshots"
+        if [ ! -d "$2" ]
+        then
+            mkdir -p $2
+        else
+            echo ""
+        fi
+        
+        ~/go/bin/gowitness file --source=alive_URLs.txt --threads=4 --resolution="1200,750" --log-format=json --log-level=warn --timeout=60 --destination="$2"
 
         #gowitness report generate
         #This should result in an report.html file with a screenshot report where screenshots are sorted using perception hashing.
@@ -465,7 +469,7 @@ Recon_all() {
 Recon_subdomain_takeover() {
     if [[ $1 == "--help" || $1 == "-h" ]]
     then
-        display_usage
+        echo -e "$purple[*] Example: Recon_subdomain_takeover <domain name> ${color_off}"
     else
         ~/go/bin/subfinder -d $1 | ~/go/bin/dnsprobe -silent -f domain | ~/go/bin/httprobe | ~/go/bin/nuclei -t ~/tools/nuclei-templates/subdomain-takeover/detect-all-takeovers.yaml
     fi
