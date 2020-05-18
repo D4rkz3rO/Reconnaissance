@@ -233,7 +233,7 @@ get_package_manager() {
 
 # Installs amass
 install_amass() {
-	GO111MODULE=on go get -u -v github.com/OWASP/Amass/v3/...
+    GO111MODULE=on go get -u -v github.com/OWASP/Amass/v3/...
     pause
 }
 
