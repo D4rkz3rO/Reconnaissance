@@ -239,7 +239,7 @@ install_amass() {
 
 # Installs subfinder
 install_subfinder() {
-	go get -u -v github.com/projectdiscovery/subfinder/cmd/subfinder
+    go get -u -v github.com/projectdiscovery/subfinder/cmd/subfinder
     pause
 }
 
