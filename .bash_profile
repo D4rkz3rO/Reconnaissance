@@ -25,7 +25,7 @@ wordlists_path="$HOME/tools/wordlists"
 
 # Usage function
 display_usage() {
-	echo -e "$purple[*] Usage: <function_name> <domain name>"
+    echo -e "$purple[*] Usage: <function_name> <domain name>"
     echo -e "$purple[*] Example: Recon_all <domain name> ${color_off}"
 
     echo "${yellow}or to go to the install tools menu ${color_off}"
@@ -33,21 +33,21 @@ display_usage() {
 }
 
 load_colors() {
-	red='\033[0;31m'    
-	green='\033[0;32m'    
-	yellow='\033[1;33m'
-	blue='\033[0;34m'    
-	purple='\033[0;35m'    
-	cyan='\033[0;36m'    
-	white='\033[1;37m'
-	color_off='\033[0m'
+    red='\033[0;31m'    
+    green='\033[0;32m'    
+    yellow='\033[1;33m'
+    blue='\033[0;34m'    
+    purple='\033[0;35m'    
+    cyan='\033[0;36m'    
+    white='\033[1;37m'
+    color_off='\033[0m'
 }
 
 # Shows the main menu
 show_menu() {
-        clear
+    clear
 
-        echo -e "${red}
+    echo -e "${red}
 
                               _______                
   _____   ____   _____   ____ \   _  \ ______  ______
@@ -56,28 +56,28 @@ show_menu() {
 |__|_|  /\___  >__|_|  /___|  /\_____  /   __/____  >
       \/     \/      \/     \/       \/|__|       \/ 
 
-        ${color_off}"
+    ${color_off}"
 
-        echo -e "${green}"
-        echo ""
-        echo "  0. Install dependencies (Go, Git, libpcap-dev, install wordlists, create tools dir) *Recommended*"
-        echo "  1. amass"
-        echo "  2. subfinder"
-        echo "  3. httprobe"
-        echo "  4. shuffledns"
-        echo "  5. dnsprobe"
-        echo "  6. naabu"
-        echo "  7. gowitness"
-        echo "  8. aquatone"
-        echo "  9. subjack"
-        echo "  10. gobuster"
-        echo "  11. fuff"
-        echo "  12. hakrawler"
-        echo "  13. nuclei"
-        echo "  14. dirsearch"
-        echo "  99. Install all of the tools above"
-        echo "  100. Exit"
-        echo -e "${color_off}"
+    echo -e "${green}"
+    echo ""
+    echo "  0. Install dependencies (Go, Git, libpcap-dev, install wordlists, create tools dir) *Recommended*"
+    echo "  1. amass"
+    echo "  2. subfinder"
+    echo "  3. httprobe"
+    echo "  4. shuffledns"
+    echo "  5. dnsprobe"
+    echo "  6. naabu"
+    echo "  7. gowitness"
+    echo "  8. aquatone"
+    echo "  9. subjack"
+    echo "  10. gobuster"
+    echo "  11. fuff"
+    echo "  12. hakrawler"
+    echo "  13. nuclei"
+    echo "  14. dirsearch"
+    echo "  99. Install all of the tools above"
+    echo "  100. Exit"
+    echo -e "${color_off}"
 }
 
 print_installing_choice() {
@@ -87,10 +87,10 @@ print_installing_choice() {
 # This functions installs tools selected by the user
 read_choice() {
     # ZSH/OSX does not take 'read "<enter string here>" var' on same line
-	echo -e "${yellow}Enter your choice [0-100]: ${color_off}" 
+    echo -e "${yellow}Enter your choice [0-100]: ${color_off}" 
     read choice
 
-	case $choice in
+    case $choice in
 	
         0)  print_installing_choice $choice
             check_missing_programs
@@ -146,98 +146,97 @@ read_choice() {
 
         *)  echo -e "${red} Sorry, invalid input ${color_off}" ;;
 	
-	esac
+    esac
 }
 
 # Checks to see if a program is installed, if not then installs it based on package manager
 check_missing_programs() {
-	for p in "${programs[@]}"
-	do
-		if [[ -n "$(command -v $p)" ]]
-		then
-		        echo -e "${yellow}[+] $p is installed ${color_off}"
-		        pause
-		else
-		        echo -e "${yellow}[-] $p is not installed ${color_off}"
-		        echo -e "${yellow}[+] Installing $p ${color_off}"
-		        install_missing_programs "$p"
-		fi
-	done
+    for p in "${programs[@]}"
+    do
+        if [[ -n "$(command -v $p)" ]]
+        then
+            echo -e "${yellow}[+] $p is installed ${color_off}"
+            pause
+        else
+            echo -e "${yellow}[-] $p is not installed ${color_off}"
+            echo -e "${yellow}[+] Installing $p ${color_off}"
+            install_missing_programs "$p"
+        fi
+    done
 }
 
 
 
 # Install missing programs/packages/dependencies based on package manager
 install_missing_programs() {
-	if [[ $package_manager == "apt" ]]
-	then
-		sudo apt install -y $p
-		pause
+    if [[ $package_manager == "apt" ]]
+    then
+        sudo apt install -y $p
+        pause
 
-	# Brew
-	elif [[ $package_manager == "brew" ]]
-	then
-		brew install $p
-		pause
+    # Brew
+    elif [[ $package_manager == "brew" ]]
+    then
+        brew install $p
+        pause
 
-	#DNF
-	elif [[ $package_manager == "dnf" ]]
-	then
-		sudo dnf install -y $p
-		pause
+    #DNF
+    elif [[ $package_manager == "dnf" ]]
+    then
+        sudo dnf install -y $p
+        pause
 
-	# Yum
-	elif [[ $package_manager == "yum" ]]
-	then
-		sudo yum install -y $p
-		pause
+    # Yum
+    elif [[ $package_manager == "yum" ]]
+    then
+        sudo yum install -y $p
+        pause
 
-	# PKG
-	elif [[ $package_manager == "pkg" ]]
-	then
-		sudo pkg install -y $p
-		pause
+    # PKG
+    elif [[ $package_manager == "pkg" ]]
+    then
+        sudo pkg install -y $p
+        pause
 
-	# Error
-	else
-		echo -e "${red}[-] Error unable to find package manager ${color_off}"
-		pause
-	fi
-
+    # Error
+    else
+        echo -e "${red}[-] Error unable to find package manager ${color_off}"
+        pause
+    fi
 }
 
 
 # Gets the package manager
 get_package_manager() {
-	# Apt
-	if [[ -n "$(command -v apt-get)" ]]
-	then
-		package_manager="apt"
+    # Apt
+    if [[ -n "$(command -v apt-get)" ]]
+    then
+        package_manager="apt"
 
-	# Brew
-	elif [[ -n "$(command -v brew)" ]]
-	then
-		package_manager="brew"
+    # Brew
+    elif [[ -n "$(command -v brew)" ]]
+    then
+        package_manager="brew"
 
-	#DNF
-	elif [[ -n "$(command -v dnf)" ]]
-	then
-		package_manager="dnf"
+    #DNF
+    elif [[ -n "$(command -v dnf)" ]]
+    then
+        package_manager="dnf"
 
-	# Yum
-	elif [[ -n "$(command -v yum)" ]]
-	then
-		package_manager="yum"
+    # Yum
+    elif [[ -n "$(command -v yum)" ]]
+    then
+        package_manager="yum"
 
-	# PKG
-	elif [[ -n "$(command -v pkg)" ]]
-	then
-		package_manager="pkg"
+    # PKG
+    elif [[ -n "$(command -v pkg)" ]]
+    then
+        package_manager="pkg"
 
-	# Error
-	else
-		echo -e "${red}[-] Error unable to find package manager${color_off}"
-	fi
+    # Error
+    else
+        echo -e "${red}[-] Error unable to find package manager${color_off}"
+    fi
 }
 
 # Installs amass
@@ -353,51 +352,50 @@ install_wordlists() {
 
 # This functions creates a tools directory if it does not exist
 create_tools_dir() {
-	if [ -d "$tools_path" ]
-	then
-		echo -e "${blue}[*] $tools_path directory found ${color_off}"
-	else
-		echo -e "${blue}[-] $tools_path does not exist, creating $tools_path ${color_off}"
-		mkdir -p "$tools_path"
-	fi
+    if [ -d "$tools_path" ]
+    then
+        echo -e "${blue}[*] $tools_path directory found ${color_off}"
+    else
+        echo -e "${blue}[-] $tools_path does not exist, creating $tools_path ${color_off}"
+        mkdir -p "$tools_path"
+    fi
 }
 
 
 # This function creates a wordlist directory if it does not exist
 create_wordlists_dir() {
-	if [ -d "$wordlists_path" ]
-	then
-		echo -e "${blue}[*] $wordlists_path directory found ${color_off}"
-	else
-		echo -e "${blue}[-] $wordlists_path does not exist, creating $wordlists_path ${color_off}"
-		mkdir -p "$wordlists_path"
-	fi
+    if [ -d "$wordlists_path" ]
+    then
+        echo -e "${blue}[*] $wordlists_path directory found ${color_off}"
+    else
+        echo -e "${blue}[-] $wordlists_path does not exist, creating $wordlists_path ${color_off}"
+        mkdir -p "$wordlists_path"
+    fi
 }
 
 pause() {
     # ZSH/OSX does not take 'read "<enter string here>" var' on same line
     echo "${cyan}Press [Enter] key to continue...${color_off}"
-	read  ENTERKEY
+    read  ENTERKEY
 }
 
 # Main function
 install_tools() {
     # Gets the package manager and sets the global variable package_manager
     get_package_manager
-    
+
     # Keeps looping through the program
     while true
-	do
-		# load_colors
-		load_colors
+    do
+        # load_colors
+        load_colors
 
-		# Display the main menu
-		show_menu
+        # Display the main menu
+        show_menu
 
-		# Read the choice selected by the user
-		read_choice
-	done
-
+        # Read the choice selected by the user
+        read_choice
+    done
 }
 
 # This function will recon a subdomain provided and output everything inside a text files
