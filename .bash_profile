@@ -74,6 +74,7 @@ show_menu() {
         echo "  11. fuff"
         echo "  12. hakrawler"
         echo "  13. nuclei"
+        echo "  14. dirsearch"
         echo "  99. Install all of the tools above"
         echo "  100. Exit"
         echo -e "${color_off}"
@@ -134,6 +135,9 @@ read_choice() {
 
         13)  print_installing_choice $choice
             install_nuclei ;;
+
+        14)  print_installing_choice $choice
+            install_dirsearch ;;
 
         99)  print_installing_choice $choice
             install_all ;;
@@ -309,6 +313,11 @@ install_nuclei() {
     GO111MODULE=on go get -u -v github.com/projectdiscovery/nuclei/cmd/nuclei
 }
 
+# Install dirsearch
+install_dirsearch() {
+    git -C $tools_path clone https://github.com/maurosoria/dirsearch
+}
+
 # Installs all tools and dependencies
 install_all() {
     check_missing_programs
@@ -327,6 +336,7 @@ install_all() {
 	install_ffuf
 	install_hakrawler
     install_nuclei
+    install_dirsearch
 }
 
 # This function creates a wordlist inside the wordlists directory
@@ -497,7 +507,25 @@ Recon_ffuf() {
     then
         echo -e "$purple[*] Example: Recon_ffuf <path to wordlist> <URL> <output file> ${color_off}"
     else
-        ~/go/bin/ffuf -c -w $1 -u $2 -of $3 
+        ~/go/bin/ffuf -c -w $1 -u $2 -of $3
+    fi
+}
+
+Recon_gobuster() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_gobuster <URL> <wordlist> <threads> <output file> ${color_off}"
+    else
+        ~/go/bin/gobuster dir -u $1 -w $2 -t $3 -o $4
+    fi
+}
+
+Recon_dirsearch() {
+    if [[ $1 == "--help" || $1 == "-h" ]]
+    then
+        echo -e "$purple[*] Example: Recon_dirsearch <URL> <wordlist> <extension> <threads> <output file> ${color_off}"
+    else
+        $tools_path/dirsearch/dirsearch.py -u $1 -w $2 -e $3 -t $4 --plain-text-report $5
     fi
 }
 
