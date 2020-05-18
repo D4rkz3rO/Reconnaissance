@@ -124,27 +124,27 @@ read_choice() {
         9)  print_installing_choice $choice
             install_subjack ;;
 
-        10)  print_installing_choice $choice
+        10) print_installing_choice $choice
             install_gobuster ;;
 
-        11)  print_installing_choice $choice
+        11) print_installing_choice $choice
             install_ffuf ;;
 
-        12)  print_installing_choice $choice
+        12) print_installing_choice $choice
             install_hakrawler ;;
 
-        13)  print_installing_choice $choice
+        13) print_installing_choice $choice
             install_nuclei ;;
 
-        14)  print_installing_choice $choice
+        14) print_installing_choice $choice
             install_dirsearch ;;
 
-        99)  print_installing_choice $choice
+        99) print_installing_choice $choice
             install_all ;;
 
         100) exit 0 ;;
 
-        *) 	echo -e "${red} Sorry, invalid input ${color_off}" ;;
+        *)  echo -e "${red} Sorry, invalid input ${color_off}" ;;
 	
 	esac
 }
@@ -323,18 +323,18 @@ install_all() {
     check_missing_programs
     create_tools_dir
     install_wordlists
-	install_amass
-	install_subfinder
-	install_httprobe
-	install_shuffledns
-	install_dnsprobe
-	install_naabu
-	install_gowitness
-	install_aquatone
-	install_subjack
-	install_gobuster
-	install_ffuf
-	install_hakrawler
+    install_amass
+    install_subfinder
+    install_httprobe
+    install_shuffledns
+    install_dnsprobe
+    install_naabu
+    install_gowitness
+    install_aquatone
+    install_subjack
+    install_gobuster
+    install_ffuf
+    install_hakrawler
     install_nuclei
     install_dirsearch
 }
