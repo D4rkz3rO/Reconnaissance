@@ -71,7 +71,7 @@ show_menu() {
         echo "  8. aquatone"
         echo "  9. subjack"
         echo "  10. gobuster"
-        echo "  11. fuf"
+        echo "  11. fuff"
         echo "  12. hakrawler"
         echo "  13. nuclei"
         echo "  99. Install all of the tools above"
@@ -497,7 +497,7 @@ Recon_ffuf() {
     then
         echo -e "$purple[*] Example: Recon_ffuf <path to wordlist> <URL> <output file> ${color_off}"
     else
-        ~/go/bin/ffuf -c -w $1 -u $2 -of $3
+        ~/go/bin/ffuf -c -w $1 -u $2 -of $3 
     fi
 }
 
